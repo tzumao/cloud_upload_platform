@@ -1,3 +1,13 @@
+import os
+from flask import Flask, render_template, request, redirect, url_for
+
+app = Flask(__name__)
+
+app.config['UPLOAD_FOLDER'] = 'uploads'
+
+# ✅ 自動建立 uploads 資料夾（Render 會從零開始）
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
 from flask import Flask, render_template, request, redirect, url_for
 import os
 from werkzeug.utils import secure_filename
