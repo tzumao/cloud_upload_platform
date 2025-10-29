@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <title>交通事故雲端資料平台</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 3D 模型預覽套件 -->
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-
     <style>
         body {
             font-family: "Microsoft JhengHei", sans-serif;
@@ -48,23 +46,39 @@
             transform: translateY(-5px);
         }
 
+        /* ☁️ 雲端上傳區塊 */
         .cloud-upload {
             border: 2px dashed #90caf9;
-            border-radius: 12px;
-            padding: 30px;
-            background-color: #e3f2fd;
-            transition: background-color 0.3s ease;
+            border-radius: 15px;
+            padding: 40px 20px;
+            background: linear-gradient(180deg, #e3f2fd 0%, #bbdefb 100%);
+            transition: all 0.3s ease;
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 160px;
         }
 
         .cloud-upload:hover {
-            background-color: #bbdefb;
+            background: #bbdefb;
+            border-color: #1565c0;
+            transform: scale(1.02);
         }
 
-        .cloud-upload i {
-            font-size: 50px;
-            color: #1565c0;
+        .cloud-icon {
+            font-size: 60px;
             margin-bottom: 10px;
+            color: #1565c0;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .cloud-upload p {
+            color: #1565c0;
+            font-size: 17px;
+            margin: 0;
+            font-weight: 600;
         }
 
         input[type="file"] {
@@ -176,8 +190,8 @@
         <h2>📤 上傳事故資料</h2>
         <form action="/upload" method="post" enctype="multipart/form-data">
             <label for="file" class="cloud-upload">
-                <i>☁️</i><br>
-                點擊或拖曳檔案至此上傳
+                <div class="cloud-icon">☁️</div>
+                <p>點擊或拖曳檔案至此上傳</p>
             </label>
             <input id="file" type="file" name="file" required>
             <br>
