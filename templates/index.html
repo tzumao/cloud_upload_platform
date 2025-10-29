@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>交通事故雲端資料平台</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 3D 模型預覽套件 -->
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
     <style>
         body {
             font-family: "Microsoft JhengHei", sans-serif;
@@ -44,9 +48,27 @@
             transform: translateY(-5px);
         }
 
+        .cloud-upload {
+            border: 2px dashed #90caf9;
+            border-radius: 12px;
+            padding: 30px;
+            background-color: #e3f2fd;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .cloud-upload:hover {
+            background-color: #bbdefb;
+        }
+
+        .cloud-upload i {
+            font-size: 50px;
+            color: #1565c0;
+            margin-bottom: 10px;
+        }
+
         input[type="file"] {
-            margin: 20px 0;
-            font-size: 16px;
+            display: none;
         }
 
         button {
@@ -58,6 +80,7 @@
             border-radius: 6px;
             cursor: pointer;
             transition: 0.3s;
+            margin-top: 15px;
         }
 
         button:hover {
@@ -67,8 +90,8 @@
         .file-list {
             margin-top: 50px;
             background-color: white;
-            width: 85%;
-            max-width: 1000px;
+            width: 90%;
+            max-width: 1100px;
             padding: 25px;
             border-radius: 15px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -91,7 +114,6 @@
             background-color: #1565c0;
             color: white;
             padding: 12px;
-            border-radius: 5px 5px 0 0;
         }
 
         td {
@@ -114,6 +136,16 @@
             text-decoration: underline;
         }
 
+        .delete-btn {
+            color: #e53935;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .delete-btn:hover {
+            text-decoration: underline;
+        }
+
         footer {
             margin-top: auto;
             background-color: #f5f5f5;
@@ -124,8 +156,16 @@
             font-size: 14px;
             border-top: 1px solid #ddd;
         }
+
+        model-viewer {
+            width: 250px;
+            height: 250px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
     </style>
 </head>
+
 <body>
     <header>
         <h1>🚁 5G 無人機事故資料雲端平台</h1>
@@ -135,31 +175,54 @@
     <div class="upload-section">
         <h2>📤 上傳事故資料</h2>
         <form action="/upload" method="post" enctype="multipart/form-data">
-            <input type="file" name="file" required>
+            <label for="file" class="cloud-upload">
+                <i>☁️</i><br>
+                點擊或拖曳檔案至此上傳
+            </label>
+            <input id="file" type="file" name="file" required>
             <br>
             <button type="submit">上傳檔案</button>
         </form>
-        <p style="color: #555; font-size: 14px;">支援格式：TXT、PDF、JPG、PNG、MP4、ZIP、CSV、JSON</p>
+        <p style="color: #555; font-size: 14px;">
+            <b>支援格式：</b> TXT、PDF、JPG、PNG、MP4、ZIP、CSV、JSON、RAW、PLY、FBX、OBJ、STL、GLB、USDZ
+        </p>
     </div>
 
     <div class="file-list">
         <h2>📁 已上傳檔案列表</h2>
+
         {% if files %}
         <table>
-            <tr>
-                <th>檔案名稱</th>
-                <th>大小</th>
-                <th>上傳時間</th>
-                <th>下載</th>
-            </tr>
-            {% for file in files %}
-            <tr>
-                <td>{{ file.name }}</td>
-                <td>{{ file.size }}</td>
-                <td>{{ file.time }}</td>
-                <td><a href="{{ url_for('uploaded_file', filename=file.name) }}" target="_blank">下載</a></td>
-            </tr>
-            {% endfor %}
+            <thead>
+                <tr>
+                    <th>檔案名稱</th>
+                    <th>大小</th>
+                    <th>上傳時間</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in files %}
+                <tr>
+                    <td>{{ file.name }}</td>
+                    <td>{{ file.size }}</td>
+                    <td>{{ file.time }}</td>
+                    <td>
+                        <a href="{{ url_for('uploaded_file', filename=file.name) }}" target="_blank">下載</a> |
+                        <a href="{{ url_for('delete_file', filename=file.name) }}" class="delete-btn">刪除</a>
+                    </td>
+                </tr>
+
+                {% if file.name.endswith('.glb') or file.name.endswith('.usdz') %}
+                <tr>
+                    <td colspan="4">
+                        <model-viewer src="{{ url_for('uploaded_file', filename=file.name) }}" 
+                            alt="3D 模型預覽" auto-rotate camera-controls></model-viewer>
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
         </table>
         {% else %}
         <p style="text-align:center; color:#888;">目前沒有上傳的檔案。</p>
@@ -169,5 +232,23 @@
     <footer>
         © 2025 交通事故智慧還原系統 | 逢甲大學 通訊工程系 專題製作
     </footer>
+
+    <script>
+        const uploadArea = document.querySelector('.cloud-upload');
+        const fileInput = document.getElementById('file');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', e => {
+            e.preventDefault();
+            uploadArea.style.backgroundColor = '#bbdefb';
+        });
+        uploadArea.addEventListener('dragleave', e => {
+            uploadArea.style.backgroundColor = '#e3f2fd';
+        });
+        uploadArea.addEventListener('drop', e => {
+            e.preventDefault();
+            fileInput.files = e.dataTransfer.files;
+        });
+    </script>
 </body>
 </html>
