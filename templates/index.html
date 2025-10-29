@@ -16,7 +16,6 @@
             align-items: center;
             min-height: 100vh;
         }
-
         header {
             width: 100%;
             background-color: #1565c0;
@@ -25,12 +24,7 @@
             padding: 25px 0;
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
-
-        header h1 {
-            margin: 0;
-            font-size: 28px;
-        }
-
+        header h1 { margin: 0; font-size: 28px; }
         .upload-section {
             margin-top: 40px;
             background-color: white;
@@ -39,125 +33,67 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
             width: 520px;
             text-align: center;
-            transition: transform 0.2s ease;
         }
-
-        .upload-section:hover {
-            transform: translateY(-5px);
-        }
-
         .cloud-upload {
             border: 2px dashed #90caf9;
             border-radius: 15px;
             padding: 40px 20px;
             background: linear-gradient(180deg, #e3f2fd 0%, #bbdefb 100%);
-            transition: all 0.3s ease;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 160px;
-        }
-
-        .cloud-upload:hover {
-            background: #bbdefb;
-            border-color: #1565c0;
-            transform: scale(1.02);
-        }
-
-        .cloud-icon {
-            font-size: 60px;
-            margin-bottom: 10px;
-            color: #1565c0;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .cloud-upload p {
-            color: #1565c0;
-            font-size: 17px;
-            margin: 0;
-            font-weight: 600;
-        }
-
-        input[type="file"] {
-            display: none;
-        }
-
-        button {
-            background-color: #1976d2;
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            font-size: 16px;
-            border-radius: 6px;
-            cursor: pointer;
             transition: 0.3s;
-            margin-top: 15px;
         }
-
-        button:hover {
-            background-color: #0d47a1;
-        }
-
-        .file-list {
-            margin-top: 50px;
-            background-color: white;
-            width: 90%;
-            max-width: 1100px;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        .file-list h2 {
-            text-align: center;
-            color: #1565c0;
+        .cloud-upload:hover { background: #bbdefb; transform: scale(1.02); }
+        .cloud-icon { font-size: 60px; margin-bottom: 10px; color: #1565c0; }
+        .cloud-upload p { color: #1565c0; font-size: 17px; font-weight: 600; margin: 0; }
+        input[type="file"] { display: none; }
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.7);
+            z-index: 99;
+            align-items: center;
+            justify-content: center;
             font-size: 22px;
-            margin-bottom: 20px;
+            color: #1565c0;
+            font-weight: bold;
         }
-
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .spinner {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #1565c0;
+            border-radius: 50%;
+            width: 50px; height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
             font-size: 16px;
         }
-
         th {
             background-color: #1565c0;
             color: white;
             padding: 12px;
         }
-
         td {
             padding: 10px;
             border-bottom: 1px solid #ddd;
             text-align: center;
         }
-
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        a {
-            color: #1976d2;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .delete-btn {
-            color: #e53935;
-            font-weight: bold;
-        }
-
-        .delete-btn:hover {
-            text-decoration: underline;
-        }
-
+        tr:hover { background-color: #f1f1f1; }
+        a { color: #1976d2; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .delete-btn { color: #e53935; font-weight: bold; }
         footer {
             margin-top: auto;
             background-color: #f5f5f5;
@@ -166,15 +102,8 @@
             padding: 15px 0;
             color: #555;
             font-size: 14px;
-            border-top: 1px solid #ddd;
         }
-
-        model-viewer {
-            width: 250px;
-            height: 250px;
-            border-radius: 10px;
-            margin-top: 10px;
-        }
+        model-viewer { width: 250px; height: 250px; margin-top: 10px; }
     </style>
 </head>
 
@@ -187,12 +116,11 @@
     <div class="upload-section">
         <h2>📤 上傳事故資料</h2>
         <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
-            <label for="file" class="cloud-upload" id="uploadArea">
+            <div class="cloud-upload" id="uploadArea">
                 <div class="cloud-icon">☁️</div>
                 <p>點擊或拖曳檔案至此上傳</p>
-            </label>
+            </div>
             <input id="file" type="file" name="file" required>
-            <button type="submit">上傳檔案</button>
         </form>
         <p style="color: #555; font-size: 14px;">
             <b>支援格式：</b> TXT、PDF、JPG、PNG、MP4、ZIP、CSV、JSON、RAW、PLY、FBX、OBJ、STL、GLB、USDZ
@@ -205,10 +133,7 @@
         <table>
             <thead>
                 <tr>
-                    <th>檔案名稱</th>
-                    <th>大小</th>
-                    <th>上傳時間</th>
-                    <th>操作</th>
+                    <th>檔案名稱</th><th>大小</th><th>上傳時間</th><th>操作</th>
                 </tr>
             </thead>
             <tbody>
@@ -222,12 +147,11 @@
                         <a href="{{ url_for('delete_file', filename=file.name) }}" class="delete-btn">刪除</a>
                     </td>
                 </tr>
-
                 {% if file.name.endswith('.glb') or file.name.endswith('.usdz') %}
                 <tr>
                     <td colspan="4">
                         <model-viewer src="{{ url_for('uploaded_file', filename=file.name) }}" 
-                            alt="3D 模型預覽" auto-rotate camera-controls></model-viewer>
+                                      alt="3D 模型預覽" auto-rotate camera-controls></model-viewer>
                     </td>
                 </tr>
                 {% endif %}
@@ -239,16 +163,22 @@
         {% endif %}
     </div>
 
-    <footer>
-        © 2025 交通事故智慧還原系統 | 逢甲大學 通訊工程系 專題製作
-    </footer>
+    <div class="loading" id="loading">
+        <div>
+            <div class="spinner"></div>
+            上傳中，請稍候...
+        </div>
+    </div>
+
+    <footer>© 2025 交通事故智慧還原系統 | 逢甲大學 通訊工程系 專題製作</footer>
 
     <script>
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('file');
         const uploadForm = document.getElementById('uploadForm');
+        const loading = document.getElementById('loading');
 
-        // 點擊觸發檔案選擇
+        // 點擊上傳區 → 打開檔案選擇
         uploadArea.addEventListener('click', () => fileInput.click());
 
         // 拖曳上傳
@@ -256,23 +186,27 @@
             e.preventDefault();
             uploadArea.style.backgroundColor = '#bbdefb';
         });
-
         uploadArea.addEventListener('dragleave', () => {
             uploadArea.style.backgroundColor = '#e3f2fd';
         });
-
         uploadArea.addEventListener('drop', e => {
             e.preventDefault();
             fileInput.files = e.dataTransfer.files;
-            uploadForm.submit(); // 拖曳後自動上傳
+            showLoading();
+            uploadForm.submit();
         });
 
-        // 選完檔案後自動上傳
+        // 一選檔案即自動上傳
         fileInput.addEventListener('change', () => {
             if (fileInput.files.length > 0) {
+                showLoading();
                 uploadForm.submit();
             }
         });
+
+        function showLoading() {
+            loading.style.display = 'flex';
+        }
     </script>
 </body>
 </html>
